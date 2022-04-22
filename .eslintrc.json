@@ -1,0 +1,15 @@
+{
+    "env": {
+      "node": true
+    },
+    "extends": ["airbnb-base"],
+    "parserOptions": {
+      "ecmaVersion": 2018
+    },
+    "rules": {
+      "no-console": "off",
+      "func-names": "off",
+      "no-underscore-dangle": "off",
+      "consistent-return": "off"
+    }
+  }
