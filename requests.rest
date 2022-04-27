@@ -3,7 +3,7 @@
 GET http://localhost:3000/users
 
 ###
-DELETE http://localhost:3000/users/6263771d0c51066fa8ae837e
+DELETE http://localhost:3000/users/62638d0d53a785a48a86257d
 
 ###
 POST http://localhost:3000/users
@@ -20,7 +20,7 @@ content-type: application/json
 
 {
   "username": "debanil",
-  "password": "mypassword"
+  "password": "mypassword1"
 }
 
 ###
