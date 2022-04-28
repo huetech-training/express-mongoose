@@ -30,7 +30,7 @@ module.exports = {
           return reject(createError.Unauthorize(errMsg))
         }
         // verify against database
-        resolve();
+        resolve({status:'Success',flag:true,message:'Enter'});
       });
     })
   },

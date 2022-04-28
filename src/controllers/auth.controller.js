@@ -2,7 +2,7 @@
 const bcrypt = require('bcrypt');
 const userModel = require('../model/user');
 const createError = require('http-errors');
-const { signAccessToken, signRefreshToken } = require('../helpers/jwt.helper');
+const { signAccessToken, signRefreshToken,verifyRefreshToken } = require('../helpers/jwt.helper');
 module.exports = {
   login: async (req, res, next) => {
     try {
@@ -24,6 +24,21 @@ module.exports = {
   },
   
   refreshToken: async (req, res, next) => {
-    next();
+    try{
+      const body=req.body;
+      if(!body || !body.refreshToken || !body.username){
+          res.send(401).send(createError.Unauthorized('Not Allowed'))
+      }
+      const verifyToken= await verifyRefreshToken(body.refreshToken);
+      if(verifyToken.flag){
+        const user=await userModel.findOne({username});
+      }else{
+        throw createError.Unauthorized("Refresh Token not valid");
+      }
+      next();
+
+    }catch(err){
+      res.send(500).send(err);
+    }
   }
 }
