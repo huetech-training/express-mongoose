@@ -4,6 +4,27 @@ const userModel = require('../model/user');
 const createError = require('http-errors');
 const { signAccessToken, signRefreshToken,verifyRefreshToken } = require('../helpers/jwt.helper');
 module.exports = {
+  register: async(req,res,next)=>{
+    const {name,email,phone,password} = req.body;
+    try{
+      if(name && email && phone && password){
+        const salt=await bcrypt.genSalt();
+        const hashPassword = await bcrypt.hash(password,salt);
+        const user = userModel({name,email,phone,hashPassword})
+        const foundUser = await userModel.findOne({email});
+        if(foundUser){
+          res.status(409).send(createError.Conflict('Email is already exists'));
+        }
+        await user.save() 
+        res.status(201).send({
+          code:201,
+          message:'User is created'
+        });       
+      }
+    }catch(err){
+      res.status(500).send({statusCode:500,errorMessage:err})
+    }
+  },
   login: async (req, res, next) => {
     try {
       const { username, password } = req.body;
