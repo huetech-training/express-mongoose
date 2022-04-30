@@ -3,6 +3,7 @@ const config = require('./config/config');
 
 const mongoose = require('mongoose');
 let server;
+
 mongoose.connect(config.mongodb.connectString, { useNewUrlParser: true})
 .then(() => {
   console.log('Connected to Mongo DB');
@@ -11,6 +12,6 @@ mongoose.connect(config.mongodb.connectString, { useNewUrlParser: true})
   });
 });
 
-process.on('uncaughtException', () => {
-  console.log('Exception....');
+process.on('uncaughtException', (e) => {
+  console.log('Exception....', e);
 });

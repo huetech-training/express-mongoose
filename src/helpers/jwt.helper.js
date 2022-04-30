@@ -5,70 +5,56 @@ const createError = require('http-errors');
 module.exports = {
   verifyAccessToken: (req, res, next) => {
     if (!req.headers['authorization']) {
-      return next(createError.Unauthorize())
+      return next(createError.Unauthorized())
     }
     const authHeaders = req.headers['authorization'];
     const token = authHeaders.split(' ')[1];
     JWT.verify(token, process.env.TOKEN_SECRET, (err, payload) => {
-        if (err) {
-          return next(createError.Unauthorize(errMsg))
-        }
-        req.payload = payload;
-        next();
-      });
+      if (err) {
+        return next(createError.Unauthorized())
+      }
+      req.payload = payload;
+      next();
+    });
   },
 
   verifyRefreshToken: (refreshToken) => {
     return new Promise((resolve, reject) => {
-    JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
+      JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
         if (err) {
-          return reject(createError.Unauthorize(errMsg))
+          return reject(createError.Unauthorized(err.message))
         }
-        const userId = payload.aud;
-        const refreshTokenFromStorage = '';
-        if (refreshToken !== refreshTokenFromStorage) {
-          return reject(createError.Unauthorize(errMsg))
-        }
-        // verify against database
-        resolve();
-      });
+        return resolve(payload.email);
+      }); 
     })
   },
 
-  signAccessToken: (userId) => {
+  signAccessToken: (payload) => {
     return new Promise((resolve, reject) => {
-      const payload = {}
-      const secret = process.env.TOKEN_SECRET;
       const options = {
-        expiresIn: '15m',
+        expiresIn: '15s',
         issuer: 'hutech',
-        audience: userId
+        audience: payload.email,
       }
-      JWT.sign(payload, secret, options, (err, token) => {
+      JWT.sign(payload, process.env.TOKEN_SECRET, options, (err, token) => {
         if(err) {
-          console.log(err);
-          reject(createError.InternalServerError());
-          return;
+          return reject(createError.InternalServerError());
         }
         resolve(token);
       })
     });
   },
 
-  signRefreshToken: (userId) => {
+  signRefreshToken: (payload) => {
     return new Promise((resolve, reject) => {
-      const payload = {}
-      const secret = process.env.TOKEN_SECRET;
       const options = {
         expiresIn: '30d',
         issuer: 'hutech',
-        audience: userId
+        audience: payload.email
       }
-      JWT.sign(payload, secret, options, (err, token) => {
+      JWT.sign(payload, process.env.REFRESH_TOKEN_SECRET, options, (err, token) => {
         if(err) {
-          console.log(err);
-          reject(createError.InternalServerError());
-          return;
+          return reject(createError.InternalServerError());
         }
         resolve(token);
       })

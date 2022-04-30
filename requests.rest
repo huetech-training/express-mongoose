@@ -3,15 +3,17 @@
 GET http://localhost:3000/users
 
 ###
-DELETE http://localhost:3000/users/62638d0d53a785a48a86257d
+DELETE http://localhost:3000/users/62638d0d53a785a48a86257
 
 ###
-POST http://localhost:3000/users
+POST http://localhost:3000/auth/register
 content-type: application/json
 
 {
-  "username": "debanil",
-  "password": "mypassword"
+  "email": "testuser1@gmail.com",
+  "password": "mypassword",
+  "phone": 999999999,
+  "name": "Test User 1"
 }
 
 ###
@@ -19,8 +21,16 @@ POST http://localhost:3000/auth/login
 content-type: application/json
 
 {
-  "username": "debanil",
-  "password": "mypassword1"
+  "email": "testuser1@gmail.com",
+  "password": "mypassword"
+}
+
+###
+POST http://localhost:3000/auth/refresh-token
+content-type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3R1c2VyMUBnbWFpbC5jb20iLCJpYXQiOjE2NTExMjAzNTQsImV4cCI6MTY1MzcxMjM1NCwiYXVkIjoidGVzdHVzZXIxQGdtYWlsLmNvbSIsImlzcyI6Imh1dGVjaCJ9.I2Rlpga-RLRdWCeAAlwhM87EXrIx3kVcgXo5-1fuSR8"
 }
 
 ###
